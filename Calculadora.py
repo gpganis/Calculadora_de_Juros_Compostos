@@ -1,9 +1,15 @@
-import flet as ft
+from flet import (
+    app, Page, ThemeMode, TextField, ElevatedButton, Row, Column, Container, 
+    padding, Alignment, MainAxisAlignment, ButtonStyle, RoundedRectangleBorder, colors
+)
 
-def main(page: ft.Page):
+def main(page: Page):
 
     page.title = "Calculadora de Juros Compostos"
-    page.theme_mode = ft.ThemeMode.LIGHT
+    page.theme_mode = ThemeMode.LIGHT
+    page.window.resizable = False
+    page.window.maximizable = False
+    page.window.center()
     page.window.width = 500
     page.window.height = 500
     
@@ -72,46 +78,46 @@ def main(page: ft.Page):
         page.window.height = 500
         page.update()
 
-    txt1 = ft.TextField(label="Valor Inicial", prefix_text="R$ ", bgcolor=ft.colors.PURPLE_50)
-    txt2 = ft.TextField(label="Taxa de Juros Anual (%)", bgcolor=ft.colors.PURPLE_50)
-    txt3 = ft.TextField(label="Depósito Mensal", prefix_text="R$ ", bgcolor=ft.colors.PURPLE_50)
-    txt4 = ft.TextField(label="Período (em meses)", bgcolor=ft.colors.PURPLE_50)
-    txt5 = ft.TextField(label="Valor Final", prefix_text="R$ ", read_only=True, bgcolor=ft.colors.PURPLE_50)
-    txt6 = ft.TextField(label="Rendimentos", prefix_text="R$ ", read_only=True, bgcolor=ft.colors.PURPLE_50)
-    txt7 = ft.TextField(label="Total Investido", prefix_text="R$ ", read_only=True, bgcolor=ft.colors.PURPLE_50)
+    txt1 = TextField(label="Valor Inicial", prefix_text="R$ ", bgcolor=colors.PURPLE_50)
+    txt2 = TextField(label="Taxa de Juros Anual (%)", bgcolor=colors.PURPLE_50)
+    txt3 = TextField(label="Depósito Mensal", prefix_text="R$ ", bgcolor=colors.PURPLE_50)
+    txt4 = TextField(label="Período (em meses)", bgcolor=colors.PURPLE_50)
+    txt5 = TextField(label="Valor Final", prefix_text="R$ ", read_only=True, bgcolor=colors.PURPLE_50)
+    txt6 = TextField(label="Rendimentos", prefix_text="R$ ", read_only=True, bgcolor=colors.PURPLE_50)
+    txt7 = TextField(label="Total Investido", prefix_text="R$ ", read_only=True, bgcolor=colors.PURPLE_50)
     
-    btn = ft.ElevatedButton(text="Calcular", height=45, bgcolor=ft.colors.PURPLE_700, color=ft.colors.WHITE, style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)), expand=True, on_click=calcular_juros_compostos)
-    btn2 = ft.ElevatedButton(text="Limpar", height=45, bgcolor=ft.colors.WHITE, color=ft.colors.PURPLE_700, style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)), expand=True, on_click=limpar_campos)
-    btn3 = ft.ElevatedButton(text="Voltar", height=45, bgcolor=ft.colors.PURPLE_700, color=ft.colors.WHITE, style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)), expand=True, on_click=voltar)
+    btn = ElevatedButton(text="Calcular", height=45, bgcolor=colors.PURPLE_700, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=calcular_juros_compostos)
+    btn2 = ElevatedButton(text="Limpar", height=45, bgcolor=colors.WHITE, color=colors.PURPLE_700, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=limpar_campos)
+    btn3 = ElevatedButton(text="Voltar", height=45, bgcolor=colors.PURPLE_700, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=voltar)
     
-    linha = ft.Row(controls=[btn, btn2], alignment=ft.MainAxisAlignment.CENTER)
-    coluna = ft.Column(
+    linha = Row(controls=[btn, btn2], alignment=MainAxisAlignment.CENTER)
+    coluna = Column(
         controls=[txt1,txt2,txt3,txt4,linha],
-        alignment=ft.MainAxisAlignment.CENTER,
+        alignment=MainAxisAlignment.CENTER,
         spacing=15
     )
-    container = ft.Container(
+    container = Container(
         content=coluna,
-        padding=ft.padding.all(20),
-        alignment=ft.Alignment(-1,0),
+        padding=padding.all(20),
+        alignment=Alignment(-1,0),
         expand=True,
         visible=True
     )
 
-    linha2 = ft.Row(controls=[btn3], alignment=ft.MainAxisAlignment.CENTER)
-    coluna2 = ft.Column(
+    linha2 = Row(controls=[btn3], alignment=MainAxisAlignment.CENTER)
+    coluna2 = Column(
         controls=[txt7,txt6,txt5,linha2],
-        alignment=ft.MainAxisAlignment.CENTER,
+        alignment=MainAxisAlignment.CENTER,
         spacing=15
     )
-    container2 = ft.Container(
+    container2 = Container(
         content=coluna2,
-        padding=ft.padding.all(20),
-        alignment=ft.Alignment(-1,0),
+        padding=padding.all(20),
+        alignment=Alignment(-1,0),
         expand=True,
         visible=False
     )
 
     page.add(container, container2)
 
-ft.app(target=main)
+app(target=main)

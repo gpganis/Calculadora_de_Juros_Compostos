@@ -78,17 +78,17 @@ def main(page: Page):
         page.window.height = 500
         page.update()
 
-    txt1 = TextField(label="Valor Inicial", prefix_text="R$ ", bgcolor=colors.PURPLE_50)
-    txt2 = TextField(label="Taxa de Juros Anual (%)", bgcolor=colors.PURPLE_50)
-    txt3 = TextField(label="Depósito Mensal", prefix_text="R$ ", bgcolor=colors.PURPLE_50)
-    txt4 = TextField(label="Período (em meses)", bgcolor=colors.PURPLE_50)
-    txt5 = TextField(label="Valor Final", prefix_text="R$ ", read_only=True, bgcolor=colors.PURPLE_50)
-    txt6 = TextField(label="Rendimentos", prefix_text="R$ ", read_only=True, bgcolor=colors.PURPLE_50)
-    txt7 = TextField(label="Total Investido", prefix_text="R$ ", read_only=True, bgcolor=colors.PURPLE_50)
+    txt1 = TextField(label="Valor Inicial", prefix_text="R$ ", bgcolor=colors.GREEN_50)
+    txt2 = TextField(label="Taxa de Juros Anual (%)", bgcolor=colors.GREEN_50)
+    txt3 = TextField(label="Depósito Mensal", prefix_text="R$ ", bgcolor=colors.GREEN_50)
+    txt4 = TextField(label="Período (em meses)", bgcolor=colors.GREEN_50)
+    txt5 = TextField(label="Valor Final", prefix_text="R$ ", read_only=True, bgcolor=colors.GREEN_50)
+    txt6 = TextField(label="Rendimentos", prefix_text="R$ ", read_only=True, bgcolor=colors.GREEN_50)
+    txt7 = TextField(label="Total Investido", prefix_text="R$ ", read_only=True, bgcolor=colors.GREEN_50)
     
-    btn = ElevatedButton(text="Calcular", height=45, bgcolor=colors.PURPLE_700, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=calcular_juros_compostos)
-    btn2 = ElevatedButton(text="Limpar", height=45, bgcolor=colors.WHITE, color=colors.PURPLE_700, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=limpar_campos)
-    btn3 = ElevatedButton(text="Voltar", height=45, bgcolor=colors.PURPLE_700, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=voltar)
+    btn = ElevatedButton(text="Calcular", height=45, bgcolor=colors.GREEN_700, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=calcular_juros_compostos)
+    btn2 = ElevatedButton(text="Limpar", height=45, bgcolor=colors.WHITE, color=colors.GREEN_700, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=limpar_campos)
+    btn3 = ElevatedButton(text="Voltar", height=45, bgcolor=colors.GREEN_700, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=voltar)
     
     linha = Row(controls=[btn, btn2], alignment=MainAxisAlignment.CENTER)
     coluna = Column(

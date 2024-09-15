@@ -2,6 +2,18 @@ from flet import (
     app, Page, ThemeMode, TextField, ElevatedButton, Row, Column, Container, 
     padding, Alignment, MainAxisAlignment, ButtonStyle, RoundedRectangleBorder, colors
 )
+import mysql.connector
+
+conexao = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="root",
+    database="database",
+)
+
+if conexao.is_connected():
+    print("Conectado ao banco de dados com sucesso!")
+    cursor = conexao.cursor()
 
 def main(page: Page):
 
@@ -11,12 +23,19 @@ def main(page: Page):
     page.window.maximizable = False
     page.window.center()
     page.window.width = 500
-    page.window.height = 500
+    page.window.height = 400
     
     def limpar_campos(e):
         for campo in [txt1, txt2, txt3, txt4]:
             campo.value = ""
             campo.error_text = None
+        page.window.height = 400
+        page.update()
+
+    def voltar(e):
+        container.visible = True
+        container2.visible = False
+        page.window.height = 400
         page.update()
 
     def calcular_juros_compostos(e):
@@ -28,67 +47,107 @@ def main(page: Page):
         txt4.error_text = None
         
         try:
-            valor_inicial = float(txt1.value.replace(",","."))
-            if valor_inicial < 0:
-                raise ValueError("Valor inicial deve ser positivo")
-        except ValueError:
-            txt1.error_text = "Informe um valor inicial válido"
-            valor_inicial = None
-
-        try:
-            taxa_juros = float(txt2.value.replace(",","."))
+            taxa_juros = float(txt1.value.replace(",", "."))
             if taxa_juros < 0:
                 raise ValueError("Taxa de juros deve ser positiva")
         except ValueError:
-            txt2.error_text = "Informe uma taxa de juros válida"
+            page.window.height = 500
+            txt1.error_text = "Informe uma taxa de juros válida"
             taxa_juros = None
 
         try:
-            deposito_mensal = float(txt3.value.replace(",","."))
-            if deposito_mensal < 0:
-                raise ValueError("Depósito mensal deve ser positivo")
-        except ValueError:
-            txt3.error_text = "Informe um depósito mensal válido"
-            deposito_mensal = None
-
-        try:
-            periodo = int(txt4.value)
+            periodo = int(txt2.value)
             if periodo < 0:
                 raise ValueError("Período deve ser positivo")
         except ValueError:
-            txt4.error_text = "Informe um período válido"
+            page.window.height = 500
+            txt2.error_text = "Informe um período válido"
             periodo = None
 
-        if None not in [valor_inicial, taxa_juros, deposito_mensal, periodo]:
+        try:
+            valor_inicial = float(txt3.value.replace(",", "."))
+            if valor_inicial < 0:
+                raise ValueError("Valor inicial deve ser positivo")
+        except ValueError:
+            page.window.height = 500
+            txt3.error_text = "Informe um valor inicial válido"
+            valor_inicial = None
+
+        try:
+            deposito_mensal = float(txt4.value.replace(",", "."))
+            if deposito_mensal < 0:
+                raise ValueError("Depósito mensal deve ser positivo")
+        except ValueError:
+            page.window.height = 500
+            txt4.error_text = "Informe um depósito mensal válido"
+            deposito_mensal = None
+
+        if None not in [taxa_juros, periodo, valor_inicial, deposito_mensal]:
             # Calcular montante usando a fórmula dos juros compostos
             taxa_juros_mensal = taxa_juros / 12 / 100
-            montante = valor_inicial * (1 + taxa_juros_mensal)**periodo + deposito_mensal * (((1 + taxa_juros_mensal)**periodo - 1) / taxa_juros_mensal)
             
-            txt5.value = f"{montante:.2f}"
-            txt6.value = f"{(montante - (valor_inicial + deposito_mensal * periodo)):.2f}"
-            txt7.value = f"{(valor_inicial + deposito_mensal * periodo):.2f}"
+            patrimonio_bruto = valor_inicial * (1 + taxa_juros_mensal)**periodo + deposito_mensal * (((1 + taxa_juros_mensal)**periodo - 1) / taxa_juros_mensal)
+            
+            rendimento_bruto = patrimonio_bruto - (valor_inicial + deposito_mensal * periodo)
+            
+            valor_investido = valor_inicial + deposito_mensal * periodo           
+
+            rendimento_liquido = 0.0
+
+            if periodo <= 6:
+                rendimento_liquido = rendimento_bruto * 0.775
+            elif 6 < periodo <= 12:
+                rendimento_liquido = rendimento_bruto * 0.80
+            elif 12 < periodo <= 24:
+                rendimento_liquido = rendimento_bruto * 0.825
+            else:
+                rendimento_liquido = rendimento_bruto * 0.85
+
+            patrimonio_liquido = valor_investido + rendimento_liquido
+            
+            txt5.value = f"{valor_investido:.2f}"
+            txt6.value = f"{patrimonio_bruto:.2f}"
+            txt7.value = f"{rendimento_bruto:.2f}"
+            txt8.value = f"{patrimonio_liquido:.2f}"
+            txt9.value = f"{rendimento_liquido:.2f}"
+
             
             container.visible = False
+            page.window.height = 465
             container2.visible = True
         page.update()
-
-    def voltar(e):
-        container.visible = True
-        container2.visible = False
-        page.window.height = 500
-        page.update()
-
-    txt1 = TextField(label="Valor Inicial", prefix_text="R$ ", bgcolor=colors.GREEN_50)
-    txt2 = TextField(label="Taxa de Juros Anual (%)", bgcolor=colors.GREEN_50)
-    txt3 = TextField(label="Depósito Mensal", prefix_text="R$ ", bgcolor=colors.GREEN_50)
-    txt4 = TextField(label="Período (em meses)", bgcolor=colors.GREEN_50)
-    txt5 = TextField(label="Valor Final", prefix_text="R$ ", read_only=True, bgcolor=colors.GREEN_50)
-    txt6 = TextField(label="Rendimentos", prefix_text="R$ ", read_only=True, bgcolor=colors.GREEN_50)
-    txt7 = TextField(label="Total Investido", prefix_text="R$ ", read_only=True, bgcolor=colors.GREEN_50)
     
-    btn = ElevatedButton(text="Calcular", height=45, bgcolor=colors.GREEN_700, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=calcular_juros_compostos)
-    btn2 = ElevatedButton(text="Limpar", height=45, bgcolor=colors.WHITE, color=colors.GREEN_700, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=limpar_campos)
-    btn3 = ElevatedButton(text="Voltar", height=45, bgcolor=colors.GREEN_700, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=voltar)
+    def enviar_para_banco(e):
+        juros = txt1.value.replace(",", ".")
+        periodo = txt2.value
+        valor_inicial = txt3.value.replace(",", ".")
+        deposito_mensal = txt4.value.replace(",", ".")
+        investimento_total = txt5.value
+        patrimonio_bruto = txt6.value
+        rendimento_bruto = txt7.value
+        patrimonio_liquido = txt8.value
+        rendimento_liquido = txt9.value
+
+        comando = f'INSERT INTO tb_investimentos (Porcentagem_ao_Ano, Período_em_Meses, Valor_Inicial, Aporte_Mensal, Investimento_Total, Patrimônio_Bruto, Rendimento_Bruto, Patrimônio_Líquido, Rendimento_Líquido) VALUES ({juros}, {periodo}, {valor_inicial}, {deposito_mensal}, {investimento_total}, {patrimonio_bruto}, {rendimento_bruto}, {patrimonio_liquido}, {rendimento_liquido})'
+        cursor.execute(comando)
+        conexao.commit()
+        print("Dados inseridos com sucesso!")
+
+    txt1 = TextField(label="Taxa de Juros Anual (%)", bgcolor=colors.WHITE)
+    txt2 = TextField(label="Período (em meses)", bgcolor=colors.WHITE)
+    txt3 = TextField(label="Valor Inicial", prefix_text="$ ", bgcolor=colors.WHITE)
+    txt4 = TextField(label="Aporte Mensal", prefix_text="$ ", bgcolor=colors.WHITE) 
+    btn = ElevatedButton(text="Calcular", height=45, bgcolor=colors.BLACK87, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=calcular_juros_compostos)
+    btn2 = ElevatedButton(text="Limpar", height=45, bgcolor=colors.WHITE, color=colors.BLACK87, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=limpar_campos)
+    
+    txt5 = TextField(label="Investimento Total", prefix_text="$ ", read_only=True, bgcolor=colors.BLUE_100)
+    txt6 = TextField(label="Patrimônio Bruto", prefix_text="$ ", read_only=True, bgcolor=colors.YELLOW_100)
+    txt7 = TextField(label="Rendimento Bruto", prefix_text="$ ", read_only=True, bgcolor=colors.YELLOW_100) 
+    txt8 = TextField(label="Patrimônio Liquido", prefix_text="$ ", read_only=True, bgcolor=colors.GREEN_100)
+    txt9 = TextField(label="Rendimento Líquido", prefix_text="$ ", read_only=True, bgcolor=colors.GREEN_100)    
+    btn3 = ElevatedButton(text="Enviar Para o Banco", height=45, bgcolor=colors.BLACK87, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=enviar_para_banco)
+    btn4 = ElevatedButton(text="Voltar", height=45, bgcolor=colors.WHITE, color=colors.BLACK87, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=voltar)
+    
     
     linha = Row(controls=[btn, btn2], alignment=MainAxisAlignment.CENTER)
     coluna = Column(
@@ -104,9 +163,9 @@ def main(page: Page):
         visible=True
     )
 
-    linha2 = Row(controls=[btn3], alignment=MainAxisAlignment.CENTER)
+    linha2 = Row(controls=[btn3, btn4], alignment=MainAxisAlignment.CENTER)
     coluna2 = Column(
-        controls=[txt7,txt6,txt5,linha2],
+        controls=[txt5,txt6,txt7,txt8,txt9,linha2],
         alignment=MainAxisAlignment.CENTER,
         spacing=15
     )

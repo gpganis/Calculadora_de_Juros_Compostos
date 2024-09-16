@@ -139,21 +139,21 @@ def main(page: Page):
 
     txt1 = TextField(label="Taxa de Juros Anual (%)", bgcolor=colors.WHITE)
     txt2 = TextField(label="Período (em meses)", bgcolor=colors.WHITE)
-    txt3 = TextField(label="Valor Inicial", prefix_text="$ ", bgcolor=colors.WHITE)
-    txt4 = TextField(label="Aporte Mensal", prefix_text="$ ", bgcolor=colors.WHITE) 
+    txt3 = TextField(label="Valor Inicial", prefix_text="R$ ", bgcolor=colors.WHITE)
+    txt4 = TextField(label="Aporte Mensal", prefix_text="R$ ", bgcolor=colors.WHITE) 
     btn = ElevatedButton(text="Calcular", height=45, bgcolor=colors.BLACK87, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=calcular_juros_compostos)
     btn2 = ElevatedButton(text="Limpar", height=45, bgcolor=colors.WHITE, color=colors.BLACK87, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=limpar_campos)
     
-    txt5 = TextField(label="Investimento Total", prefix_text="$ ", read_only=True, bgcolor=colors.BLUE_100)
-    txt6 = TextField(label="Patrimônio Bruto", prefix_text="$ ", read_only=True, bgcolor=colors.YELLOW_100)
-    txt7 = TextField(label="Rendimento Bruto", prefix_text="$ ", read_only=True, bgcolor=colors.YELLOW_100) 
-    txt8 = TextField(label="Patrimônio Liquido", prefix_text="$ ", read_only=True, bgcolor=colors.GREEN_100)
-    txt9 = TextField(label="Rendimento Líquido", prefix_text="$ ", read_only=True, bgcolor=colors.GREEN_100)    
-    btn3 = ElevatedButton(text="Enviar Para o Banco", height=45, bgcolor=colors.BLACK87, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=enviar_para_banco)
+    txt5 = TextField(label="Investimento Total", prefix_text="R$ ", read_only=True, bgcolor=colors.BLUE_100)
+    txt6 = TextField(label="Patrimônio Bruto", prefix_text="R$ ", read_only=True, bgcolor=colors.YELLOW_100)
+    txt7 = TextField(label="Rendimento Bruto", prefix_text="R$ ", read_only=True, bgcolor=colors.YELLOW_100) 
+    txt8 = TextField(label="Patrimônio Liquido", prefix_text="R$ ", read_only=True, bgcolor=colors.GREEN_100)
+    txt9 = TextField(label="Rendimento Líquido", prefix_text="R$ ", read_only=True, bgcolor=colors.GREEN_100)    
+    btn3 = ElevatedButton(text="Salvar", height=45, bgcolor=colors.BLACK87, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=enviar_para_banco)
     btn4 = ElevatedButton(text="Voltar", height=45, bgcolor=colors.WHITE, color=colors.BLACK87, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=voltar)
     
-    dialog1 = AlertDialog(modal=True,content=Text("Dados Inseridos no Banco com Sucesso!"),actions=[ElevatedButton("Ok", on_click=close_dialog, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
-    dialog2 = AlertDialog(modal=True,content=Text("Falha ao Conectar ao Banco de Dados"),actions=[ElevatedButton("Ok", on_click=close_dialog, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
+    dialog1 = AlertDialog(modal=True,title=Text("Sucesso!"),content=Text("Dados Salvos no Banco de Dados!"),actions=[ElevatedButton("Ok", on_click=close_dialog, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
+    dialog2 = AlertDialog(modal=True,title=Text("Erro!"),content=Text("Conexão com o Banco de Dados Mal-Sucedida"),actions=[ElevatedButton("Ok", on_click=close_dialog, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
 
     linha = Row(controls=[btn, btn2], alignment=MainAxisAlignment.CENTER)
     coluna = Column(

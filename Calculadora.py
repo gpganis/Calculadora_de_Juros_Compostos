@@ -1,19 +1,8 @@
 from flet import (
-    app, Page, ThemeMode, TextField, ElevatedButton, Row, Column, Container, 
+    app, Page,Text, ThemeMode, TextField, ElevatedButton, Row, Column, Container, AlertDialog, TextButton,
     padding, Alignment, MainAxisAlignment, ButtonStyle, RoundedRectangleBorder, colors
 )
 import mysql.connector
-
-conexao = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="root",
-    database="database",
-)
-
-if conexao.is_connected():
-    print("Conectado ao banco de dados com sucesso!")
-    cursor = conexao.cursor()
 
 def main(page: Page):
 
@@ -36,6 +25,13 @@ def main(page: Page):
         container.visible = True
         container2.visible = False
         page.window.height = 400
+        page.update()
+
+    def close_dialog(e):
+        if dialog1.open is True:
+            dialog1.open = False 
+        if dialog2.open is True: 
+            dialog2.open = False
         page.update()
 
     def calcular_juros_compostos(e):
@@ -118,20 +114,28 @@ def main(page: Page):
         page.update()
     
     def enviar_para_banco(e):
-        juros = txt1.value.replace(",", ".")
-        periodo = txt2.value
-        valor_inicial = txt3.value.replace(",", ".")
-        deposito_mensal = txt4.value.replace(",", ".")
-        investimento_total = txt5.value
-        patrimonio_bruto = txt6.value
-        rendimento_bruto = txt7.value
-        patrimonio_liquido = txt8.value
-        rendimento_liquido = txt9.value
+        try:
+            conexao = mysql.connector.connect(host="localhost",user="root",password="root",database="database")
 
-        comando = f'INSERT INTO tb_investimentos (Porcentagem_ao_Ano, Período_em_Meses, Valor_Inicial, Aporte_Mensal, Investimento_Total, Patrimônio_Bruto, Rendimento_Bruto, Patrimônio_Líquido, Rendimento_Líquido) VALUES ({juros}, {periodo}, {valor_inicial}, {deposito_mensal}, {investimento_total}, {patrimonio_bruto}, {rendimento_bruto}, {patrimonio_liquido}, {rendimento_liquido})'
-        cursor.execute(comando)
-        conexao.commit()
-        print("Dados inseridos com sucesso!")
+            juros = txt1.value.replace(",", ".")
+            periodo = txt2.value
+            valor_inicial = txt3.value.replace(",", ".")
+            deposito_mensal = txt4.value.replace(",", ".")
+            investimento_total = txt5.value
+            patrimonio_bruto = txt6.value
+            rendimento_bruto = txt7.value
+            patrimonio_liquido = txt8.value
+            rendimento_liquido = txt9.value
+
+            if conexao.is_connected():
+                cursor = conexao.cursor()
+                comando = f'INSERT INTO tb_investimentos (Porcentagem_ao_Ano, Período_em_Meses, Valor_Inicial, Aporte_Mensal, Investimento_Total, Patrimônio_Bruto, Rendimento_Bruto, Patrimônio_Líquido, Rendimento_Líquido) VALUES ({juros}, {periodo}, {valor_inicial}, {deposito_mensal}, {investimento_total}, {patrimonio_bruto}, {rendimento_bruto}, {patrimonio_liquido}, {rendimento_liquido})'
+                cursor.execute(comando)
+                conexao.commit()
+                page.open(dialog1)
+                
+        except:
+            page.open(dialog2)
 
     txt1 = TextField(label="Taxa de Juros Anual (%)", bgcolor=colors.WHITE)
     txt2 = TextField(label="Período (em meses)", bgcolor=colors.WHITE)
@@ -148,7 +152,9 @@ def main(page: Page):
     btn3 = ElevatedButton(text="Enviar Para o Banco", height=45, bgcolor=colors.BLACK87, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=enviar_para_banco)
     btn4 = ElevatedButton(text="Voltar", height=45, bgcolor=colors.WHITE, color=colors.BLACK87, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=voltar)
     
-    
+    dialog1 = AlertDialog(modal=True,content=Text("Dados Inseridos no Banco com Sucesso!"),actions=[ElevatedButton("Ok", on_click=close_dialog, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
+    dialog2 = AlertDialog(modal=True,content=Text("Falha ao Conectar ao Banco de Dados"),actions=[ElevatedButton("Ok", on_click=close_dialog, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
+
     linha = Row(controls=[btn, btn2], alignment=MainAxisAlignment.CENTER)
     coluna = Column(
         controls=[txt1,txt2,txt3,txt4,linha],

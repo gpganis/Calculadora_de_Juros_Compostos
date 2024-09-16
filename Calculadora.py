@@ -36,14 +36,14 @@ def main(page: Page):
 
     def calcular_juros_compostos(e):
         
-        # Resetar as mensagens de erro ao iniciar o cálculo
         txt1.error_text = None
         txt2.error_text = None
         txt3.error_text = None
         txt4.error_text = None
         
         try:
-            taxa_juros = float(txt1.value.replace(",", "."))
+            txt1.value = txt1.value.replace(",", ".")
+            taxa_juros = float(txt1.value)
             if taxa_juros < 0:
                 raise ValueError
         except ValueError:
@@ -61,7 +61,8 @@ def main(page: Page):
             periodo = None
 
         try:
-            valor_inicial = float(txt3.value.replace(",", "."))
+            txt3.value = txt3.value.replace(",", ".")
+            valor_inicial = float(txt3.value)
             if valor_inicial < 0:
                 raise ValueError
         except ValueError:
@@ -70,7 +71,8 @@ def main(page: Page):
             valor_inicial = None
 
         try:
-            deposito_mensal = float(txt4.value.replace(",", "."))
+            txt4.value = txt4.value.replace(",", ".")
+            deposito_mensal = float(txt4.value)
             if deposito_mensal < 0:
                 raise ValueError
         except ValueError:
@@ -117,10 +119,10 @@ def main(page: Page):
         try:
             conexao = mysql.connector.connect(host="localhost",user="root",password="root",database="database")
 
-            juros = txt1.value.replace(",", ".")
+            juros = txt1.value
             periodo = txt2.value
-            valor_inicial = txt3.value.replace(",", ".")
-            deposito_mensal = txt4.value.replace(",", ".")
+            valor_inicial = txt3.value
+            deposito_mensal = txt4.value
             investimento_total = txt5.value
             patrimonio_bruto = txt6.value
             rendimento_bruto = txt7.value
@@ -135,6 +137,7 @@ def main(page: Page):
                 page.open(dialog1)
                 
         except mysql.connector.Error as e:
+            print(f'Error! {e}')
             page.open(dialog2)
 
     txt1 = TextField(label="Taxa de Juros Anual (%)", bgcolor=colors.WHITE)

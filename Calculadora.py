@@ -45,37 +45,33 @@ def main(page: Page):
         try:
             taxa_juros = float(txt1.value.replace(",", "."))
             if taxa_juros < 0:
-                raise ValueError("Taxa de juros deve ser positiva")
+                raise ValueError
         except ValueError:
-            page.window.height = 500
-            txt1.error_text = "Informe uma taxa de juros válida"
+            txt1.error_text = "Informe Uma Taxa de Juros Válida"
             taxa_juros = None
 
         try:
             periodo = int(txt2.value)
             if periodo < 0:
-                raise ValueError("Período deve ser positivo")
+                raise ValueError
         except ValueError:
-            page.window.height = 500
-            txt2.error_text = "Informe um período válido"
+            txt2.error_text = "Informe Um Período Válido"
             periodo = None
 
         try:
             valor_inicial = float(txt3.value.replace(",", "."))
             if valor_inicial < 0:
-                raise ValueError("Valor inicial deve ser positivo")
+                raise ValueError
         except ValueError:
-            page.window.height = 500
-            txt3.error_text = "Informe um valor inicial válido"
+            txt3.error_text = "Informe Um valor Inicial Válido"
             valor_inicial = None
 
         try:
             deposito_mensal = float(txt4.value.replace(",", "."))
             if deposito_mensal < 0:
-                raise ValueError("Depósito mensal deve ser positivo")
+                raise ValueError
         except ValueError:
-            page.window.height = 500
-            txt4.error_text = "Informe um depósito mensal válido"
+            txt4.error_text = "Informe um Depósito Mensal Válido"
             deposito_mensal = None
 
         if None not in [taxa_juros, periodo, valor_inicial, deposito_mensal]:

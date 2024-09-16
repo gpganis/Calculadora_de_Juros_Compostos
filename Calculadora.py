@@ -66,7 +66,7 @@ def main(page: Page):
                 raise ValueError
         except ValueError:
             page.window.height = 500
-            txt3.error_text = "Informe Um valor Inicial Válido"
+            txt3.error_text = "Informe Um Valor Inicial Válido"
             valor_inicial = None
 
         try:
@@ -75,7 +75,7 @@ def main(page: Page):
                 raise ValueError
         except ValueError:
             page.window.height = 500
-            txt4.error_text = "Informe um Depósito Mensal Válido"
+            txt4.error_text = "Informe Um Depósito Mensal Válido"
             deposito_mensal = None
 
         if None not in [taxa_juros, periodo, valor_inicial, deposito_mensal]:

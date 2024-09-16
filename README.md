@@ -4,4 +4,4 @@
 - Senha: root
 
 # Comando para Criar o Execultável
-- pyinstaller --onefile --noconsole --icon .\calculadora.ico .\Calculadora.py
+- pyinstaller --onefile --noconsole --icon calculadora.ico Calculadora.py

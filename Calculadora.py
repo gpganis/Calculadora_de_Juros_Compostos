@@ -47,6 +47,7 @@ def main(page: Page):
             if taxa_juros < 0:
                 raise ValueError
         except ValueError:
+            page.window.height = 500
             txt1.error_text = "Informe Uma Taxa de Juros Válida"
             taxa_juros = None
 
@@ -55,6 +56,7 @@ def main(page: Page):
             if periodo < 0:
                 raise ValueError
         except ValueError:
+            page.window.height = 500
             txt2.error_text = "Informe Um Período Válido"
             periodo = None
 
@@ -63,6 +65,7 @@ def main(page: Page):
             if valor_inicial < 0:
                 raise ValueError
         except ValueError:
+            page.window.height = 500
             txt3.error_text = "Informe Um valor Inicial Válido"
             valor_inicial = None
 
@@ -71,6 +74,7 @@ def main(page: Page):
             if deposito_mensal < 0:
                 raise ValueError
         except ValueError:
+            page.window.height = 500
             txt4.error_text = "Informe um Depósito Mensal Válido"
             deposito_mensal = None
 

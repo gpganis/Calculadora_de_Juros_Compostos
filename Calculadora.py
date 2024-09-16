@@ -28,10 +28,8 @@ def main(page: Page):
         page.update()
 
     def fechar_alerta(e):
-        if dialog1.open is True:
-            dialog1.open = False 
-        if dialog2.open is True: 
-            dialog2.open = False
+        dialog1.open = False
+        dialog2.open = False
         page.update()
 
     def calcular_juros_compostos(e):

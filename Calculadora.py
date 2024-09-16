@@ -1,6 +1,6 @@
 from flet import (
-    app, Page,Text, ThemeMode, TextField, ElevatedButton, Row, Column, Container, AlertDialog, TextButton,
-    padding, Alignment, MainAxisAlignment, ButtonStyle, RoundedRectangleBorder, colors
+    app, Page,Text, ThemeMode, TextField, ElevatedButton, Row, Column, Container, AlertDialog,
+    padding, Alignment, MainAxisAlignment, ButtonStyle, RoundedRectangleBorder, colors, IconButton, icons
 )
 import mysql.connector
 
@@ -14,6 +14,20 @@ def main(page: Page):
     page.window.width = 500
     page.window.height = 400
     
+    def trocar_moedas(e):
+        for campo in [txt1, txt2, txt3, txt4]:
+            campo.error_text = None
+        
+        if txt3.prefix_text == "R$ ":
+            for campo in [txt3, txt4, txt5, txt6, txt7, txt8, txt9]:
+                campo.prefix_text = "$ "
+        else:
+            for campo in [txt3, txt4, txt5, txt6, txt7, txt8, txt9]:
+                campo.prefix_text = "R$ "
+
+        page.window.height = 400
+        page.update()
+
     def limpar_campos(e):
         for campo in [txt1, txt2, txt3, txt4]:
             campo.value = ""
@@ -27,7 +41,7 @@ def main(page: Page):
         page.window.height = 400
         page.update()
 
-    def close_dialog(e):
+    def fechar_alerta(e):
         if dialog1.open is True:
             dialog1.open = False 
         if dialog2.open is True: 
@@ -134,16 +148,18 @@ def main(page: Page):
                 conexao.commit()
                 page.open(dialog1)
                 
-        except:
+        except mysql.connector.Error as e:
+            print(f'Erro! {e}')
             page.open(dialog2)
 
     txt1 = TextField(label="Taxa de Juros Anual (%)", bgcolor=colors.WHITE)
     txt2 = TextField(label="Período (em meses)", bgcolor=colors.WHITE)
     txt3 = TextField(label="Valor Inicial", prefix_text="R$ ", bgcolor=colors.WHITE)
     txt4 = TextField(label="Aporte Mensal", prefix_text="R$ ", bgcolor=colors.WHITE) 
-    btn = ElevatedButton(text="Calcular", height=45, bgcolor=colors.BLACK87, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=calcular_juros_compostos)
-    btn2 = ElevatedButton(text="Limpar", height=45, bgcolor=colors.WHITE, color=colors.BLACK87, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=limpar_campos)
-    
+    btn1 = ElevatedButton(text="Calcular", height=45, bgcolor=colors.BLACK87, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=calcular_juros_compostos)
+    iconbtn1 = IconButton(icon=icons.CLEANING_SERVICES, icon_color=colors.BLACK87, tooltip="Limpar Campos", on_click=limpar_campos)
+    iconbtn2 = IconButton(icon=icons.ATTACH_MONEY, icon_color=colors.BLACK87, tooltip="Trocar Moeda", on_click=trocar_moedas)
+
     txt5 = TextField(label="Investimento Total", prefix_text="R$ ", read_only=True, bgcolor=colors.BLUE_100)
     txt6 = TextField(label="Patrimônio Bruto", prefix_text="R$ ", read_only=True, bgcolor=colors.YELLOW_100)
     txt7 = TextField(label="Rendimento Bruto", prefix_text="R$ ", read_only=True, bgcolor=colors.YELLOW_100) 
@@ -152,10 +168,10 @@ def main(page: Page):
     btn3 = ElevatedButton(text="Salvar", height=45, bgcolor=colors.BLACK87, color=colors.WHITE, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=enviar_para_banco)
     btn4 = ElevatedButton(text="Voltar", height=45, bgcolor=colors.WHITE, color=colors.BLACK87, style=ButtonStyle(shape=RoundedRectangleBorder(radius=5)), expand=True, on_click=voltar)
     
-    dialog1 = AlertDialog(modal=True,title=Text("Sucesso!"),content=Text("Dados Salvos no Banco de Dados!"),actions=[ElevatedButton("Ok", on_click=close_dialog, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
-    dialog2 = AlertDialog(modal=True,title=Text("Erro!"),content=Text("Conexão com o Banco de Dados Mal-Sucedida"),actions=[ElevatedButton("Ok", on_click=close_dialog, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
+    dialog1 = AlertDialog(modal=True,title=Text("Sucesso!"),content=Text("Dados Salvos no Banco de Dados!"),actions=[ElevatedButton("Ok", on_click=fechar_alerta, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
+    dialog2 = AlertDialog(modal=True,title=Text("Erro!"),content=Text("Conexão com o Banco de Dados Mal-Sucedida"),actions=[ElevatedButton("Ok", on_click=fechar_alerta, color=colors.BLACK87),],actions_alignment=MainAxisAlignment.END)
 
-    linha = Row(controls=[btn, btn2], alignment=MainAxisAlignment.CENTER)
+    linha = Row(controls=[iconbtn1, btn1, iconbtn2], alignment=MainAxisAlignment.CENTER)
     coluna = Column(
         controls=[txt1,txt2,txt3,txt4,linha],
         alignment=MainAxisAlignment.CENTER,
